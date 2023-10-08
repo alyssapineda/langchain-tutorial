@@ -5,7 +5,7 @@ import os
 from langchain.llms import OpenAI
 from langchain.prompts import PromptTemplate
 from langchain.chains import LLMChain, SimpleSequentialChain, SequentialChain
-
+from langchain.agents import AgentType, initialize_agent, load_tools
 
 # openai.api_key = st.secrets["OPENAI_API_KEY"]
 
@@ -73,4 +73,20 @@ sequential_chain = SequentialChain(
 )
 
 sequential_response = sequential_chain({'cuisine':'Filipino'})
-print(sequential_response)
+#print(sequential_response)
+
+
+
+#---------AGENTS EXAMPLE---------
+tools = load_tools(["wikipedia", "llm-math"], llm=llm)
+
+#create agent
+agent = initialize_agent(
+  tools,
+  llm,
+  agent=AgentType.ZERO_SHOT_REACT_DESCRIPTION,
+  verbose=True #gives step by step
+)
+
+agent_response = agent.run("When was Elon Musk born? What is his age right now in 2023?")
+print(agent_response)
