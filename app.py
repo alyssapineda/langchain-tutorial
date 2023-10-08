@@ -6,7 +6,7 @@ from langchain.llms import OpenAI
 from langchain.prompts import PromptTemplate
 from langchain.chains import LLMChain, SimpleSequentialChain, SequentialChain, ConversationChain
 from langchain.agents import AgentType, initialize_agent, load_tools
-from langchain.memory import ConversationBufferMemory
+from langchain.memory import ConversationBufferMemory,ConversationBufferWindowMemory
 
 # openai.api_key = st.secrets["OPENAI_API_KEY"]
 
@@ -108,18 +108,31 @@ prompt_template_name = PromptTemplate(
 # print(serp_agent_response)
 
 #---------MEMORY EXAMPLE---------
-memory = ConversationBufferMemory()
-name_chain = LLMChain(llm=llm, prompt=prompt_template_name, memory=memory)
-name_response = name_chain.run("American")
-print(name_chain)
+#memory = ConversationBufferMemory()
+#name_chain = LLMChain(llm=llm, prompt=prompt_template_name, memory=memory)
+#name_response = name_chain.run("American")
+#print(name_chain)
 #print(chain.memory.buffer)
 
-convo = ConversationChain(llm=OpenAI(temperature=0.7))
-print(convo.prompt.template)
+# convo = ConversationChain(llm=OpenAI(temperature=0.7))
+# print(convo.prompt.template)
+
+# print(convo.run("Who won the first cricket world cup?"))
+# print(convo.run("What is 5 + 5?"))
+# print(convo.run("Who was the captain of the winning team?"))
+
+#print(convo.memory)
+#print(convo.memory.buffer)
+
+#remember only 1 last conversation exchange (one question-answer pair)
+memory = ConversationBufferWindowMemory(k=1)
+
+convo = ConversationChain(
+  llm=OpenAI(temperature=0.6),
+  memory=memory
+)
+#print(convo.prompt.template)
 
 print(convo.run("Who won the first cricket world cup?"))
 print(convo.run("What is 5 + 5?"))
 print(convo.run("Who was the captain of the winning team?"))
-
-#print(convo.memory)
-print(convo.memory.buffer)
