@@ -6,6 +6,7 @@ from langchain.llms import OpenAI
 from langchain.prompts import PromptTemplate
 from langchain.chains import LLMChain, SimpleSequentialChain, SequentialChain
 from langchain.agents import AgentType, initialize_agent, load_tools
+from langchain.memory import ConversationBufferMemory
 
 # openai.api_key = st.secrets["OPENAI_API_KEY"]
 
@@ -103,6 +104,12 @@ agent = initialize_agent(
   verbose=True #gives step by step
 )
 
-serp_agent_response = agent.run("What was the GDP of US in 2022 plus 5?")
-print(serp_agent_response)
+# serp_agent_response = agent.run("What was the GDP of US in 2022 plus 5?")
+# print(serp_agent_response)
 
+#---------MEMORY EXAMPLE---------
+memory = ConversationBufferMemory()
+name_chain = LLMChain(llm=llm, prompt=prompt_template_name, memory=memory)
+name_response = name_chain.run("American")
+print(name_chain)
+#print(chain.memory.buffer)
