@@ -1,6 +1,6 @@
 # from .secrets import secret_key
 # import streamlit as st
-from secret_key import OPENAI_API_KEY
+from secret_key import OPENAI_API_KEY,SERPAPI_API_KEY
 import os
 from langchain.llms import OpenAI
 from langchain.prompts import PromptTemplate
@@ -10,6 +10,7 @@ from langchain.agents import AgentType, initialize_agent, load_tools
 # openai.api_key = st.secrets["OPENAI_API_KEY"]
 
 os.environ['OPENAI_API_KEY'] = OPENAI_API_KEY
+os.environ['SERPAPI_API_KEY'] = SERPAPI_API_KEY
 
 llm = OpenAI(temperature = 0.7) #temperature is how 'creative' you want your model to be, the higher though the riskier, can tend to make mistakes
 
@@ -78,15 +79,30 @@ sequential_response = sequential_chain({'cuisine':'Filipino'})
 
 
 #---------AGENTS EXAMPLE---------
-tools = load_tools(["wikipedia", "llm-math"], llm=llm)
+# tools = load_tools(["wikipedia", "llm-math"], llm=llm)
 
 #create agent
+# agent = initialize_agent(
+#   tools,
+#   llm,
+#   agent=AgentType.ZERO_SHOT_REACT_DESCRIPTION,
+#   verbose=True #gives step by step
+# )
+
+#agent_response = agent.run("When was Elon Musk born? What is his age right now in 2023?")
+#print(agent_response)
+
+
+#__SERPAPI example __
+serp_tools = load_tools(["serpapi", "llm-math"], llm=llm)
+
 agent = initialize_agent(
-  tools,
+  serp_tools,
   llm,
   agent=AgentType.ZERO_SHOT_REACT_DESCRIPTION,
   verbose=True #gives step by step
 )
 
-agent_response = agent.run("When was Elon Musk born? What is his age right now in 2023?")
-print(agent_response)
+serp_agent_response = agent.run("What was the GDP of US in 2022 plus 5?")
+print(serp_agent_response)
+
