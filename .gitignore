@@ -1,4 +1,4 @@
 secret_key.py
 secret_key.pyc
 .streamlit/secrets.toml
-__pycache__/secret_key.cpython-38.pyc
+__pycache__/*
